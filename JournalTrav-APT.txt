@@ -10,7 +10,7 @@
 - création du journal de travail
 
 [00:05]
-sortie de cours
+- sortie de cours
 
 [00:40]
 - j'ai commencé par directement créer et ajouter les fichiers manuellement ainsi que les routes et autres
@@ -18,4 +18,16 @@ car je n'avais pas compris qu'Adonis faisait tout cela pour nous, j'ai donc perd
 - Installation d'Adonis et création du repos Flshcards en suivant les consignes du CdC 
 - completition du journal de travail
 
-[]
+[01:05]
+- j'ai commencé à créer les template et layouts que j'aurais besoin pour le projet, mais j'ai rencontré un problème
+au niveau des routes, mon controller n'est pas pret du tout et j'en ai besoin pour le routage.
+- j'ai donc essayé de trouver une solution pour soit ne pas utiliser le controller tout de suite, soit coder le controller
+- j'ai donc essayé de coder le controller en adaptant les data que j'avais dans le dossier P_bulles2 mais le controller dépend de plein de choses entre autres les modèles etc...
+- j'essaie donc de trouver par ou il faut que je commence à coder pour obtenir un routage fonctionnel.
+
+[00:05]
+- sortie de cours
+
+[00:20]
+- complétition du journal de travail et commit push
+- Total d'heures de la journée : 3h35 + 25min de pause total.
