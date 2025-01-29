@@ -1,0 +1,21 @@
+29.01.25
+[01:40]
+- explications du projets par m.Carrel, 
+- création du repo Flashcards, 
+- clonage du repo WOF
+- création du projet IceScrum
+- création du token IceScrum
+- explications du fonctionnement des PX et niveaux pour le projet
+- inscription pour le projet sur le marché de l'emploi et discussion sur le CdC
+- création du journal de travail
+
+[00:05]
+sortie de cours
+
+[00:40]
+- j'ai commencé par directement créer et ajouter les fichiers manuellement ainsi que les routes et autres
+car je n'avais pas compris qu'Adonis faisait tout cela pour nous, j'ai donc perdu ~35 min à faire du travail que j'ai supprimé dès l'installation d'Adonis
+- Installation d'Adonis et création du repos Flshcards en suivant les consignes du CdC 
+- completition du journal de travail
+
+[]
