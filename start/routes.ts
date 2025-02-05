@@ -9,8 +9,9 @@
 import DecksController from '#controllers/decks_controller'
 
 import router from '@adonisjs/core/services/router'
+
 router.get('/', async ({ response }) => {
-  return response.redirect().toRoute('home')
+  return response.redirect().toRoute('loginHomePage')
 })
 
 router
@@ -21,8 +22,17 @@ router
 
 router
   .get('/login', async ({ view }) => {
-    return view.render('pages/login')
+    return view.render('pages/login/login')
   })
   .as('login')
-
+router
+  .get('/loginHomePage', async ({ view }) => {
+    return view.render('pages/login/loginHomePage')
+  })
+  .as('loginHomePage')
+router
+  .get('/inscription', async ({ view }) => {
+    return view.render('pages/login/inscription')
+  })
+  .as('inscription')
 //router.get('/', [DecksController, 'index']).as('home')

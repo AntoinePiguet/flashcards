@@ -91,3 +91,6 @@ footer {
   background: #75f0d1;
   color: white;
 }
+.d-none {
+  display: none;
+}

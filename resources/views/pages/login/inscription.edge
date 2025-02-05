@@ -1,0 +1,45 @@
+@component('components/layout', { title: 'Inscription' })
+  <h3>
+    Page d'inscription
+  </h3>
+  <div class="login-container">
+    <form action="" method="post">
+      <label for="user"></label>
+      <input type="text" name="user" id="user" placeholder="Username" />
+
+      <label for="password"></label>
+      <input type="password" name="password" id="password" placeholder="Password" />
+
+      <label for="pwdConfirmation"></label>
+      <input type="password" name="pwdConfirmation" id="pwdConfirmation" placeholder="Confirm password" />
+
+      <button type="submit" class="btn btn-login" class="d-none" id="registerBtn">S'inscrire</button>
+    </form>
+  </div>
+  <!--Vérifie que :
+        Le nom d'utilisateur n'est pas vide.
+        Le mot de passe contient au moins 8 caractères.
+        Le mot de passe et sa confirmation sont identiques.
+  Active le bouton seulement si toutes les conditions sont remplies.-->
+  <script>
+    //Le DOMContentLoaded dans l'addEventListener signifie que le script va s’exécuter uniquement après que tout le HTML ait été chargé et analysé par le navigateur,
+    //mais avant que les images, les feuilles de style et les sous-ressources ne soient complètement chargées.
+    document.addEventListener("DOMContentLoaded", () => {
+      const userInput = document.getElementById("user");
+      const passwordInput = document.getElementById("password");
+      const confirmPasswordInput = document.getElementById("pwdConfirmation");
+      const registerBtn = document.getElementById("registerBtn");
+      function validateForm() {
+        const usernameValid = userInput.value.trim().length > 0;
+        const passwordValid = passwordInput.value.length >= 8;
+        const passwordsMatch = passwordInput.value === confirmPasswordInput.value;
+        // Active le bouton si toutes les conditions sont remplies
+        //registerBtn.classList.remove('d-none') = (usernameValid && passwordValid && passwordsMatch);
+        //registerBtn.classList.add('d-none') = !(usernameValid && passwordValid && passwordsMatch);
+      }
+      userInput.addEventListener("input", validateForm);
+      passwordInput.addEventListener("input", validateForm);
+      confirmPasswordInput.addEventListener("input", validateForm);
+    });
+  </script>
+@endcomponent

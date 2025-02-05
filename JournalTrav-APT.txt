@@ -31,3 +31,25 @@ au niveau des routes, mon controller n'est pas pret du tout et j'en ai besoin po
 [00:20]
 - complétition du journal de travail et commit push
 - Total d'heures de la journée : 3h35 + 25min de pause total.
+
+
+05.02.25
+
+[00:10]
+- j'ai commencé par envoyer un mail à deux élèves de 3ème pour leur demander un accès à leur git et ainsi voir leurs commit et donc leur stratégie de développement.
+
+[01:10]
+- J'ai ajouté une page footer dans laquelle j'ai juste mis les components et un petit texte
+- j'ai modifié mon header pour que l'image s'affiche bien et que le lien redirige bien vers une route qui mène à l'accueil.
+- ajouté un lien appelé log out qui me redirige vers la page de login.
+- j'ai ajouté un css à mon projet pour le rendre plus lisible.
+
+[01:00]
+- j'ai ajouté une page loginHomePage qui me permet de choisir entre créer un compte ou me logger.
+- cette page est devenue la page par défaut quand on arrive sur le site et elle est aussi devenue le lien de log out.
+- j'ai créé une page inscription qui me permet de créer un compte (la méthode post ne fait rien pour l'instant) pour ce faire, le user dois rentrer un username,
+un password et confirmer le password pour que le bouton apparaisse (le bouton apparait tout le temps -> à corriger)
+- j'ai bien sur créé les routes nécessaires au fonctionnement du site.
+
+[00:10]
+- j'ai rempli mon journal de travail de la session et commité.
