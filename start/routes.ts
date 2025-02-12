@@ -35,4 +35,5 @@ router
     return view.render('pages/login/inscription')
   })
   .as('inscription')
+router.post('/inscription', async ({ view }) => {}).as('postInscription')
 //router.get('/', [DecksController, 'index']).as('home')
