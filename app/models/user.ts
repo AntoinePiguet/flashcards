@@ -14,10 +14,11 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare id: number
 
   @column()
-  declare fullName: string | null
+  declare username: string | null
 
   @column()
-  declare email: string
+  //isAdmin = pour le modèle, is_admin = pour la db donc le seeder
+  declare isAdmin: boolean | null
 
   @column({ serializeAs: null })
   declare password: string
