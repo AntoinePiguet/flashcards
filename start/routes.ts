@@ -9,7 +9,8 @@
 import DecksController from '#controllers/decks_controller'
 
 import router from '@adonisjs/core/services/router'
-
+import AuthController from '#controllers/UserControler'
+import { middleware } from './kernel.js'
 router.get('/', async ({ response }) => {
   return response.redirect().toRoute('loginHomePage')
 })
@@ -30,10 +31,18 @@ router
     return view.render('pages/login/loginHomePage')
   })
   .as('loginHomePage')
+
+// Route permettant d'afficher le formulaire d'inscription (si nécessaire)
 router
   .get('/inscription', async ({ view }) => {
     return view.render('pages/login/inscription')
   })
   .as('inscription')
-router.post('/inscription', async ({ view }) => {}).as('postInscription')
+
+// Route permettant l'inscription d'un utilisateur
+router
+  .post('/inscription', [AuthController, 'handleRegister'])
+  .as('auth.handleRegister')
+  .use(middleware.guest())
+
 //router.get('/', [DecksController, 'index']).as('home')
