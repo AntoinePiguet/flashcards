@@ -53,3 +53,17 @@ un password et confirmer le password pour que le bouton apparaisse (le bouton ap
 
 [00:10]
 - j'ai rempli mon journal de travail de la session et commité.
+
+
+//note : || node ace migration:fresh --seed //drop la db puis execute le script de création puis le seeder qui fait des insert into
+
+12.02.25
+
+[1:30]
+- j'ai essayé d'importer des modules d'Adonis dans le but de rendre l'authentification plus simple, mais ça n'a rendu les choses que plus difficiles
+j'ai essayé avec les packages de @adonis/auth mais ça n'a pas marché alors j'ai ensuite essyé avec @adonis/ally mais de nouveau ce n'était pas la consigne.
+
+[2:30]
+j'ai modifié ma migration ainsi qu'ajouté un seeder, un modèle pour le user et un userController et un validator.
+j'ai fait cette compilation de choses pour pouvoir créer un user, cet objectif n'est pas encore atteint depuis le site,
+mais la migration se fait correctement et l'emploi du seeder est bon, mes data s'enregistrent correctement dans la db.
