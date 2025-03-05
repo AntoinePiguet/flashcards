@@ -1,20 +1,25 @@
 @component('components/layout', { title: 'Login' })
-  <h3>
-    page de login
-  </h3>
   <div class="login-container">
-    @if(error)
-      <p class="alert alert-danger">
-        {{ error }}
-      </p>
-    @endif
+    <h3 class="login-title">
+      Connexion
+    </h3>
     <form action="{{ route('auth.handleLogin') }}" method="post">
       {{ csrfField() }}
-      <label for="username"></label>
-      <input type="text" name="username" id="username" placeholder="Login" />
-      <label for="password"></label>
-      <input type="password" name="password" id="password" placeholder="Mot de passe" />
-      <button type="submit" class="btn btn-login">Se connecter</button>
+      <div class="form-group">
+        <label for="username">Nom d'utilisateur</label>
+        <input type="text" name="username" id="username" placeholder="Entrez votre nom d'utilisateur" />
+      </div>
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" name="password" id="password" placeholder="Entrez votre mot de passe" />
+      </div>
+      @if(flashMessages.has('error'))
+        <div class="error-message">
+          <i class="error-icon">⚠</i>
+          {{ flashMessages.get('error') }}
+        </div>
+      @endif
+      <button type="submit" class="btn-login">Se connecter</button>
     </form>
   </div>
 @endcomponent

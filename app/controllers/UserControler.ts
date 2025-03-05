@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { registerUserValidator, loginUserValidator } from '../Validator/validator.js'
 import User from '#models/user'
+import hash from '@adonisjs/core/services/hash'
 
 interface ValidationError {
   messages: Record<string, string[]>
@@ -15,22 +16,33 @@ export default class AuthController {
 
       try {
         console.log('Attempting authentication...')
+        // Find the user
         const user = await User.findBy('username', payload.username)
         if (!user) {
-          throw new Error('User not found')
+          session.flash({ error: "Nom d'utilisateur ou mot de passe incorrect." })
+          return response.redirect().back()
         }
+
+        // Verify password
+        const isValid = await hash.verify(user.password, payload.password)
+        if (!isValid) {
+          session.flash({ error: "Nom d'utilisateur ou mot de passe incorrect." })
+          return response.redirect().back()
+        }
+
+        // Login user
         await auth.use('web').login(user)
         console.log('Authentication successful')
         return response.redirect().toRoute('home')
       } catch (error) {
         console.error('Authentication failed:', error)
         session.flash({ error: "Nom d'utilisateur ou mot de passe incorrect." })
-        return response.redirect().toRoute('login')
+        return response.redirect().back()
       }
     } catch (error) {
       console.error('Validation failed:', error)
       session.flash({ error: 'Veuillez remplir tous les champs.' })
-      return response.redirect().toRoute('login')
+      return response.redirect().back()
     }
   }
 
