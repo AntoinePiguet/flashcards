@@ -2,7 +2,7 @@ import vine from '@vinejs/vine'
 
 const loginUserValidator = vine.compile(
   vine.object({
-    username: vine.string(),
+    username: vine.string().trim().minLength(3),
     password: vine.string().minLength(4),
   })
 )
@@ -14,9 +14,10 @@ const registerUserValidator = vine.compile(
       .trim()
       .minLength(3)
       .maxLength(30)
-      .unique({ table: 't_user', column: 'username' }),
+      .unique({ table: 'users', column: 'username' }),
 
     password: vine.string().minLength(6),
+    pwdConfirmation: vine.string().sameAs('password'),
   })
 )
 

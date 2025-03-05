@@ -1,0 +1,20 @@
+@component('components/layout', { title: 'Erreur' })
+  <div class="error-container">
+    <h3>
+      Erreur d'inscription
+    </h3>
+
+    @if(error)
+      <p class="alert alert-danger">
+        {{ error }}
+      </p>
+    @else
+      <p class="alert alert-danger">
+        Une erreur inconnue est survenue.
+      </p>
+    @endif
+    
+    <a href="{{ route('loginHomePage') }}" class="btn btn-primary">Retour à l'accueil</a>
+    <a href="{{ route('inscription') }}" class="btn btn-secondary">Réessayer</a>
+  </div>
+@endcomponent

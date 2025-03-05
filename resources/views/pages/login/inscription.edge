@@ -3,9 +3,10 @@
     Page d'inscription
   </h3>
   <div class="login-container">
-    <form action="inscription" method="post">
-      <label for="user"></label>
-      <input type="text" name="user" id="user" placeholder="Username" />
+    <form action="{{ route('auth.handleRegister') }}" method="post">
+      {{ csrfField() }}
+      <label for="username"></label>
+      <input type="text" name="username" id="username" placeholder="Username" />
 
       <label for="password"></label>
       <input type="password" name="password" id="password" placeholder="Password" />
@@ -19,23 +20,20 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const userInput = document.getElementById("user");
+      const userInput = document.getElementById("username");
       const passwordInput = document.getElementById("password");
       const confirmPasswordInput = document.getElementById("pwdConfirmation");
       const registerBtn = document.getElementById("registerBtn");
-
       function validateForm() {
         const usernameValid = userInput.value.trim().length > 0;
         const passwordValid = passwordInput.value.length >= 8;
         const passwordsMatch = passwordInput.value === confirmPasswordInput.value;
-
         if (usernameValid && passwordValid && passwordsMatch) {
           registerBtn.classList.remove("d-none"); // Affiche le bouton
         } else {
           registerBtn.classList.add("d-none"); // Cache le bouton
         }
       }
-
       userInput.addEventListener("input", validateForm);
       passwordInput.addEventListener("input", validateForm);
       confirmPasswordInput.addEventListener("input", validateForm);

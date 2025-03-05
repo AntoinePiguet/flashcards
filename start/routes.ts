@@ -11,8 +11,10 @@ import DecksController from '#controllers/decks_controller'
 import router from '@adonisjs/core/services/router'
 import AuthController from '#controllers/UserControler'
 import { middleware } from './kernel.js'
+
+// Routes pour les utilisateurs non connectés
 router.get('/', async ({ response }) => {
-  return response.redirect().toRoute('loginHomePage')
+  return response.redirect('/home')
 })
 
 router
@@ -26,23 +28,39 @@ router
     return view.render('pages/login/login')
   })
   .as('login')
-router
-  .get('/loginHomePage', async ({ view }) => {
-    return view.render('pages/login/loginHomePage')
-  })
-  .as('loginHomePage')
+  .use(middleware.guest())
 
-// Route permettant d'afficher le formulaire d'inscription (si nécessaire)
+router
+  .post('/login', [AuthController, 'handleLogin'])
+  .as('auth.handleLogin')
+  .use(middleware.guest())
+
 router
   .get('/inscription', async ({ view }) => {
     return view.render('pages/login/inscription')
   })
   .as('inscription')
+  .use(middleware.guest())
 
-// Route permettant l'inscription d'un utilisateur
 router
   .post('/inscription', [AuthController, 'handleRegister'])
   .as('auth.handleRegister')
   .use(middleware.guest())
+
+//route pour accéder à la page d'erreur
+router
+  .get('/erreur', async ({ view, session }) => {
+    return view.render('pages/login/loginError', { error: session.flashMessages.get('error') })
+  })
+  .as('erreur')
+
+// Route de déconnexion
+router
+  .post('/logout', async ({ auth, response }) => {
+    await auth.use('web').logout()
+    return response.redirect().toRoute('home')
+  })
+  .as('logout')
+  .use(middleware.auth())
 
 //router.get('/', [DecksController, 'index']).as('home')
