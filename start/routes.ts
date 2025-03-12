@@ -65,11 +65,9 @@ router
 // Deck routes
 router
   .group(() => {
-    // Create routes first
+    // Deck routes
     router.get('/decks/create', [DeckController, 'create']).as('decks.create')
     router.post('/decks', [DeckController, 'store']).as('decks.store')
-
-    // Then index and show routes
     router.get('/decks', [DeckController, 'index']).as('decks.index')
     router.get('/decks/:id', [DeckController, 'show']).as('deck.show')
 
@@ -78,9 +76,7 @@ router
     router.post('/decks/:id/cards', [DeckController, 'storeCard']).as('deck.cards.store')
     router.get('/decks/:id/cards/:cardId', [DeckController, 'showCard']).as('deck.cards.show')
     router.get('/decks/:id/cards/:cardId/edit', [DeckController, 'editCard']).as('deck.cards.edit')
-    router.put('/decks/:id/cards/:cardId', [DeckController, 'updateCard']).as('deck.cards.update')
-    router
-      .delete('/decks/:id/cards/:cardId', [DeckController, 'deleteCard'])
-      .as('deck.cards.delete')
+    router.post('/decks/:id/cards/:cardId/update', [DeckController, 'updateCard']).as('deck.cards.update')
+    router.post('/decks/:id/cards/:cardId/delete', [DeckController, 'deleteCard']).as('deck.cards.delete')
   })
   .middleware([middleware.auth()])

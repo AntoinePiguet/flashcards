@@ -1,52 +1,169 @@
 @component('components/layout', { title: 'Modifier la Carte' })
+  <style>
+    .deck-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .deck-header {
+      margin-bottom: 2rem;
+    }
+
+    .deck-header h1 {
+      margin: 0;
+      color: #1f2937;
+    }
+
+    .deck-description {
+      color: #6b7280;
+      margin-top: 0.5rem;
+    }
+
+    .card-form {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      min-height: 100px;
+      font-size: 1rem;
+    }
+
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .success-message {
+      background: #dcfce7;
+      color: #166534;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+
+    .btn i {
+      font-size: 0.875rem;
+    }
+  </style>
+
   <div class="deck-container">
     <div class="deck-header">
-      <h1>
-        Modifier la Carte
-      </h1>
-      <p class="deck-description">
-        Deck: {{ card.deck.name }}
-      </p>
+      <h1>Modifier la Carte</h1>
+      <p class="deck-description">Deck: {{ card.deck.name }}</p>
     </div>
 
-    <div class="card-container">
-      <form
-        action="{{ route('deck.cards.update', { id: card.deckId, cardId: card.id }) }}"
-        method="POST"
-        class="card-form"
-      >
-        @csrf
-        @method('PUT')
+    <div class="card-form">
+      @if(error)
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ error }}
+        </div>
+      @endif
 
-          @if(error)
-            <div class="error-message">
-              <i class="fas fa-exclamation-circle"></i>
-              {{ error }}
-            </div>
-          @endif
-          
-          <div class="form-group">
-            <label for="question">Question</label>
-            <textarea name="question" id="question" required>{{ card.question }}</textarea>
-          </div>
+      <form action="{{ route('deck.cards.update', { id: card.deckId, cardId: card.id }) }}" method="POST">
+        {{ csrfField() }}
+        <input type="hidden" name="_method" value="PUT">
 
-          <div class="form-group">
-            <label for="answer">Réponse</label>
-            <textarea name="answer" id="answer" required>{{ card.answer }}</textarea>
-          </div>
+        <div class="form-group">
+          <label for="question">Question (minimum 10 caractères)</label>
+          <textarea 
+            name="question" 
+            id="question" 
+            required 
+            minlength="10"
+          >{{ card.question }}</textarea>
+        </div>
 
-          <div class="form-actions">
-            <a
-              href="{{ route('deck.cards.show', { id: card.deckId, cardId: card.id }) }}"
-              class="btn btn-secondary"
-            >
-              <i class="fas fa-arrow-left"></i>Retour
+        <div class="form-group">
+          <label for="answer">Réponse</label>
+          <textarea 
+            name="answer" 
+            id="answer" 
+            required
+          >{{ card.answer }}</textarea>
+        </div>
+
+        <div class="form-actions">
+          <a href="{{ route('deck.cards.show', { id: card.deckId, cardId: card.id }) }}" class="btn btn-secondary">
+            <i class="fas fa-times"></i>Abandonner
           </a>
-            <button type="submit" class="btn btn-primary">
-              <i class="fas fa-save"></i>Enregistrer
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i>Enregistrer
           </button>
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
-  @endcomponent
+  </div>
+@endcomponent

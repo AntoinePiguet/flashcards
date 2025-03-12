@@ -27,55 +27,22 @@ export default class DeckController {
 
   async store({ request, response, auth, session }: HttpContext) {
     try {
-      console.log('Starting deck creation...')
-
-      // Get form data
       const name = request.input('name')
       const description = request.input('description')
 
-      console.log('Form data:', { name, description })
-      console.log('User ID:', auth.user!.id)
-
-      // Validate name
       if (!name || !name.trim()) {
         session.flash('error', 'Le nom du deck ne peut pas être vide')
         return response.redirect().back()
       }
 
-      // Check for duplicate deck name for the same user
-      const existingDeck = await Database.rawQuery(
-        'SELECT * FROM decks WHERE user_id = ? AND name = ?',
-        [auth.user!.id, name]
-      )
+      const deck = new Deck()
+      deck.name = name
+      deck.description = description || ''
+      deck.userId = auth.user!.id
+      await deck.save()
 
-      if (existingDeck.length > 0) {
-        session.flash('error', 'Vous avez déjà un deck avec ce nom')
-        return response.redirect().back()
-      }
-
-      console.log('Creating deck...')
-
-      // Insert deck using raw SQL
-      const [result] = await Database.rawQuery(
-        'INSERT INTO decks (name, description, user_id, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())',
-        [name, description || '', auth.user!.id]
-      )
-
-      const deckId = result.insertId
-      console.log('Deck created with ID:', deckId)
-
-      // Verify the deck was created
-      const [deck] = await Database.rawQuery('SELECT * FROM decks WHERE id = ?', [deckId])
-
-      if (!deck) {
-        throw new Error('Deck was not created successfully')
-      }
-
-      // Set success message
       session.flash('success', 'Deck créé avec succès!')
-
-      // Redirect to card creation using direct URL
-      return response.redirect(`/decks/${deckId}/cards/new`)
+      return response.redirect(`/decks/${deck.id}/cards/new`)
     } catch (error) {
       console.error('Error creating deck:', error)
       session.flash('error', 'Une erreur est survenue lors de la création du deck')
@@ -103,44 +70,57 @@ export default class DeckController {
     }
   }
 
-  async createCard({ params, view }: HttpContext) {
-    const deck = await Deck.findOrFail(params.id)
-    return view.render('pages/card/new', { deck })
+  async createCard({ params, view, session }: HttpContext) {
+    try {
+      const deck = await Deck.findOrFail(params.id)
+      const cards = await Card.query()
+        .where('deck_id', deck.id)
+        .select(['id', 'question'])
+        .orderBy('created_at', 'desc')
+      return view.render('pages/card/new', { deck, cards })
+    } catch (error) {
+      console.error('Error in createCard:', error)
+      session.flash('error', 'Une erreur est survenue')
+      return response.redirect().back()
+    }
   }
-
+  
   async storeCard({ request, response, params, session }: HttpContext) {
-    const deck = await Deck.findOrFail(params.id)
-    const payload = request.only(['question', 'answer'])
+    try {
+      const deck = await Deck.findOrFail(params.id)
+      const question = request.input('question', '').trim()
+      const answer = request.input('answer', '').trim()
 
-    // Validate question length
-    if (payload.question.length < 10) {
-      session.flash('error', 'La question doit contenir au moins 10 caractères')
+      // Validate question length
+      if (question.length < 10) {
+        session.flash('error', 'La question doit contenir au moins 10 caractères')
+        return response.redirect().back()
+      }
+
+      // Check for duplicate question
+      const existingCard = await Card.query()
+        .where('deck_id', deck.id)
+        .where('question', question)
+        .first()
+
+      if (existingCard) {
+        session.flash('error', 'Une carte avec cette question existe déjà dans ce deck')
+        return response.redirect().back()
+      }
+
+      const card = await Card.create({
+        question,
+        answer,
+        deckId: deck.id
+      })
+
+      session.flash('success', 'Carte créée avec succès!')
+      return response.redirect().toRoute('deck.show', { id: deck.id })
+    } catch (error) {
+      console.error('Error in storeCard:', error)
+      session.flash('error', 'Une erreur est survenue lors de la création de la carte')
       return response.redirect().back()
     }
-
-    // Check for empty answer
-    if (!payload.answer.trim()) {
-      session.flash('error', 'La réponse ne peut pas être vide')
-      return response.redirect().back()
-    }
-
-    // Check for duplicate question
-    const existingCard = await Card.query()
-      .where('deck_id', deck.id)
-      .where('question', payload.question)
-      .first()
-
-    if (existingCard) {
-      session.flash('error', 'Cette question existe déjà dans le deck')
-      return response.redirect().back()
-    }
-
-    await Card.create({
-      ...payload,
-      deckId: deck.id,
-    })
-
-    return response.redirect().toRoute('deck.show', { id: deck.id })
   }
 
   async showCard({ params, view }: HttpContext) {
@@ -163,34 +143,38 @@ export default class DeckController {
   }
 
   async updateCard({ request, response, params, session }: HttpContext) {
-    const card = await Card.findOrFail(params.cardId)
-    const payload = request.only(['question', 'answer'])
+    try {
+      const card = await Card.findOrFail(params.cardId)
+      const question = request.input('question', '').trim()
+      const answer = request.input('answer', '').trim()
 
-    // Validate question length
-    if (payload.question.length < 10) {
-      session.flash('error', 'La question doit contenir au moins 10 caractères')
+      // Validate question length
+      if (question.length < 10) {
+        session.flash('error', 'La question doit contenir au moins 10 caractères')
+        return response.redirect().back()
+      }
+
+      // Check for duplicate question (excluding current card)
+      const existingCard = await Card.query()
+        .where('deck_id', card.deckId)
+        .where('question', question)
+        .whereNot('id', card.id)
+        .first()
+
+      if (existingCard) {
+        session.flash('error', 'Une carte avec cette question existe déjà dans ce deck')
+        return response.redirect().back()
+      }
+
+      card.merge({ question, answer })
+      await card.save()
+
+      session.flash('success', 'Carte modifiée avec succès!')
+      return response.redirect().toRoute('deck.show', { id: card.deckId })
+    } catch (error) {
+      console.error('Error in updateCard:', error)
+      session.flash('error', 'Une erreur est survenue lors de la modification de la carte')
       return response.redirect().back()
     }
-
-    // Check for empty answer
-    if (!payload.answer.trim()) {
-      session.flash('error', 'La réponse ne peut pas être vide')
-      return response.redirect().back()
-    }
-
-    // Check for duplicate question (excluding current card)
-    const existingCard = await Card.query()
-      .where('deck_id', card.deckId)
-      .where('question', payload.question)
-      .whereNot('id', card.id)
-      .first()
-
-    if (existingCard) {
-      session.flash('error', 'Cette question existe déjà dans le deck')
-      return response.redirect().back()
-    }
-
-    await card.merge(payload).save()
-    return response.redirect().toRoute('deck.show', { id: card.deckId })
   }
 }
