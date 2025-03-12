@@ -1,0 +1,68 @@
+@component('components/layout', { title: 'Carte' })
+  <div class="deck-container">
+    <div class="deck-header">
+      <h1>
+        Carte
+      </h1>
+      <p class="deck-description">
+        Deck: {{ card.deck.name }}
+      </p>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <div class="card-front">
+          <div class="card-content">
+            <h2>
+              Question
+            </h2>
+            <p>
+              {{ card.question }}
+            </p>
+          </div>
+        </div>
+        <div class="card-back">
+          <div class="card-content">
+            <h2>
+              Réponse
+            </h2>
+            <p>
+              {{ card.answer }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <a
+          href="{{ route('deck.cards.edit', { id: card.deckId, cardId: card.id }) }}"
+          class="btn btn-primary"
+        >
+          <i class="fas fa-edit"></i>Modifier
+        </a>
+        <form
+          action="{{ route('deck.cards.delete', { id: card.deckId, cardId: card.id }) }}"
+          method="POST"
+          class="d-inline"
+        >
+          <button
+            type="submit"
+            class="btn btn-secondary"
+            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette carte ?')"
+          >
+            <i class="fas fa-trash"></i>Supprimer
+          </button>
+        </form>
+        <a href="{{ route('deck.show', { id: card.deckId }) }}" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i>Retour au deck
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector(".card").addEventListener("click", function() {
+      this.classList.toggle("flipped");
+    });
+  </script>
+@endcomponent

@@ -6,11 +6,10 @@
 | The routes file is used for defining the HTTP routes.
 |
 */
-import DecksController from '#controllers/decks_controller'
-
 import router from '@adonisjs/core/services/router'
 import AuthController from '#controllers/UserControler'
 import { middleware } from './kernel.js'
+import DeckController from '#controllers/deck_controller'
 
 // Routes pour les utilisateurs non connectés
 router.get('/', async ({ response }) => {
@@ -47,7 +46,7 @@ router
   .as('auth.handleRegister')
   .use(middleware.guest())
 
-//route pour accéder à la page d'erreur
+// Route pour accéder à la page d'erreur
 router
   .get('/erreur', async ({ view, session }) => {
     return view.render('pages/login/loginError', { error: session.flashMessages.get('error') })
@@ -63,4 +62,25 @@ router
   .as('logout')
   .use(middleware.auth())
 
-//router.get('/', [DecksController, 'index']).as('home')
+// Deck routes
+router
+  .group(() => {
+    // Create routes first
+    router.get('/decks/create', [DeckController, 'create']).as('decks.create')
+    router.post('/decks', [DeckController, 'store']).as('decks.store')
+
+    // Then index and show routes
+    router.get('/decks', [DeckController, 'index']).as('decks.index')
+    router.get('/decks/:id', [DeckController, 'show']).as('deck.show')
+
+    // Card routes
+    router.get('/decks/:id/cards/new', [DeckController, 'createCard']).as('deck.cards.create')
+    router.post('/decks/:id/cards', [DeckController, 'storeCard']).as('deck.cards.store')
+    router.get('/decks/:id/cards/:cardId', [DeckController, 'showCard']).as('deck.cards.show')
+    router.get('/decks/:id/cards/:cardId/edit', [DeckController, 'editCard']).as('deck.cards.edit')
+    router.put('/decks/:id/cards/:cardId', [DeckController, 'updateCard']).as('deck.cards.update')
+    router
+      .delete('/decks/:id/cards/:cardId', [DeckController, 'deleteCard'])
+      .as('deck.cards.delete')
+  })
+  .middleware([middleware.auth()])

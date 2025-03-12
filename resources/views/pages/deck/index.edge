@@ -1,0 +1,41 @@
+@component('components/layout', { title: 'Mes Decks' })
+  <div class="deck-container">
+    <div class="deck-header">
+      <h1>
+        Mes Decks
+      </h1>
+      <a href="{{ route('decks.create') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i>Nouveau Deck
+      </a>
+    </div>
+
+    @if(decks.length === 0)
+      <div class="empty-state">
+        <p>
+          Vous n'avez pas encore créé de deck.
+        </p>
+        <a href="{{ route('decks.create') }}" class="btn btn-primary">
+          <i class="fas fa-plus"></i>Créer mon premier deck
+        </a>
+      </div>
+    @else
+      <div class="decks-grid">
+        @each(deck in decks)
+          <a href="{{ route('deck.show', { id: deck.id }) }}" class="deck-item">
+            <div class="deck-content">
+              <h3>
+                {{ deck.name }}
+              </h3>
+              <p>
+                {{ deck.cards.length }} cartes
+              </p>
+              <p class="deck-date">
+                Créé le {{ new Date(deck.createdAt).toLocaleDateString() }}
+              </p>
+            </div>
+          </a>
+        @end
+      </div>
+    @endif
+  </div>
+@endcomponent

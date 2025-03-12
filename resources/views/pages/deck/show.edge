@@ -1,0 +1,40 @@
+@component('components/layout', { title: deck.name })
+  <div class="deck-container">
+    <div class="deck-header">
+      <h1>
+        {{ deck.name }}
+      </h1>
+      @if(deck.description)
+        <p class="deck-description">
+          {{ deck.description }}
+        </p>
+      @endif
+      <a href="{{ route('deck.cards.create', { id: deck.id }) }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i>Nouvelle Carte
+      </a>
+    </div>
+
+    @if(deck.cards.length === 0)
+      <div class="empty-state">
+        <p>
+          Ce deck ne contient pas encore de cartes.
+        </p>
+        <a href="{{ route('deck.cards.create', { id: deck.id }) }}" class="btn btn-primary">
+          <i class="fas fa-plus"></i>Ajouter ma première carte
+        </a>
+      </div>
+    @else
+      <div class="cards-grid">
+        @each(card in deck.cards)
+          <a href="{{ route('deck.cards.show', { id: deck.id, cardId: card.id }) }}" class="card-item">
+            <div class="card-content">
+              <h3>
+                {{ card.question }}
+              </h3>
+            </div>
+          </a>
+        @end
+      </div>
+    @endif
+  </div>
+@endcomponent
