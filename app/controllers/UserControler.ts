@@ -51,10 +51,13 @@ export default class AuthController {
       // Valide les données envoyées
       const payload = await request.validateUsing(registerUserValidator)
 
-      // Crée un nouvel utilisateur
+      // Hash the password before creating the user
+      const hashedPassword = await hash.make(payload.password)
+
+      // Create the user with hashed password
       const user = await User.create({
         username: payload.username,
-        password: payload.password,
+        password: hashedPassword,
       })
 
       // Connecte automatiquement l'utilisateur après l'inscription
@@ -83,7 +86,7 @@ export default class AuthController {
         session.flash({ error: "Une erreur est survenue lors de l'inscription." })
       }
 
-      return response.redirect().toRoute('erreur')
+      return response.redirect().back()
     }
   }
 }

@@ -27,17 +27,35 @@ export default class DeckController {
 
   async store({ request, response, auth, session }: HttpContext) {
     try {
-      const name = request.input('name')
-      const description = request.input('description')
+      const name = request.input('name')?.trim()
+      const description = request.input('description')?.trim()
 
-      if (!name || !name.trim()) {
+      // Validate name
+      if (!name) {
         session.flash('error', 'Le nom du deck ne peut pas être vide')
+        return response.redirect().back()
+      }
+
+      // Validate description length
+      if (!description || description.length < 10) {
+        session.flash('error', 'La description doit contenir au moins 10 caractères')
+        return response.redirect().back()
+      }
+
+      // Check for duplicate title
+      const existingDeck = await Deck.query()
+        .where('user_id', auth.user!.id)
+        .where('name', name)
+        .first()
+
+      if (existingDeck) {
+        session.flash('error', 'Vous avez déjà un deck avec ce nom')
         return response.redirect().back()
       }
 
       const deck = new Deck()
       deck.name = name
-      deck.description = description || ''
+      deck.description = description
       deck.userId = auth.user!.id
       await deck.save()
 
@@ -174,6 +192,91 @@ export default class DeckController {
     } catch (error) {
       console.error('Error in updateCard:', error)
       session.flash('error', 'Une erreur est survenue lors de la modification de la carte')
+      return response.redirect().back()
+    }
+  }
+
+  async edit({ params, view, auth, response }: HttpContext) {
+    try {
+      const deck = await Deck.query()
+        .where('id', params.id)
+        .where('user_id', auth.user!.id)
+        .firstOrFail()
+
+      return view.render('pages/deck/edit', { deck })
+    } catch (error) {
+      return response.redirect().toRoute('decks.index')
+    }
+  }
+
+  async update({ params, request, response, auth, session }: HttpContext) {
+    try {
+      const deck = await Deck.query()
+        .where('id', params.id)
+        .where('user_id', auth.user!.id)
+        .firstOrFail()
+
+      const name = request.input('name')?.trim()
+      const description = request.input('description')?.trim()
+
+      // Validate name
+      if (!name) {
+        session.flash('error', 'Le nom du deck ne peut pas être vide')
+        return response.redirect().back()
+      }
+
+      // Validate description length
+      if (!description || description.length < 10) {
+        session.flash('error', 'La description doit contenir au moins 10 caractères')
+        return response.redirect().back()
+      }
+
+      // Check for duplicate title (excluding current deck)
+      const existingDeck = await Deck.query()
+        .where('user_id', auth.user!.id)
+        .where('name', name)
+        .whereNot('id', deck.id)
+        .first()
+
+      if (existingDeck) {
+        session.flash('error', 'Vous avez déjà un deck avec ce nom')
+        return response.redirect().back()
+      }
+
+      deck.merge({ name, description })
+      await deck.save()
+
+      session.flash('success', 'Deck modifié avec succès!')
+      return response.redirect().toRoute('deck.show', { id: deck.id })
+    } catch (error) {
+      console.error('Error updating deck:', error)
+      session.flash('error', 'Une erreur est survenue lors de la modification du deck')
+      return response.redirect().back()
+    }
+  }
+
+  async delete({ params, response, auth, session }: HttpContext) {
+    try {
+      const deck = await Deck.query()
+        .where('id', params.id)
+        .where('user_id', auth.user!.id)
+        .firstOrFail()
+
+      await Database.transaction(async (trx) => {
+        // Delete all cards in the deck
+        await Card.query({ client: trx })
+          .where('deck_id', deck.id)
+          .delete()
+
+        // Delete the deck
+        await deck.delete()
+      })
+
+      session.flash('success', 'Deck supprimé avec succès!')
+      return response.redirect().toRoute('decks.index')
+    } catch (error) {
+      console.error('Error deleting deck:', error)
+      session.flash('error', 'Une erreur est survenue lors de la suppression du deck')
       return response.redirect().back()
     }
   }

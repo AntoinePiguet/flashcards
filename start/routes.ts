@@ -70,6 +70,9 @@ router
     router.post('/decks', [DeckController, 'store']).as('decks.store')
     router.get('/decks', [DeckController, 'index']).as('decks.index')
     router.get('/decks/:id', [DeckController, 'show']).as('deck.show')
+    router.get('/decks/:id/edit', [DeckController, 'edit']).as('deck.edit')
+    router.post('/decks/:id/update', [DeckController, 'update']).as('deck.update')
+    router.post('/decks/:id/delete', [DeckController, 'delete']).as('deck.delete')
 
     // Card routes
     router.get('/decks/:id/cards/new', [DeckController, 'createCard']).as('deck.cards.create')

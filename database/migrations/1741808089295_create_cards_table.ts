@@ -5,12 +5,12 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
-      table.text('question').notNullable()
+      table.increments('id').primary()
+      table.string('question').notNullable()
       table.text('answer').notNullable()
       table.integer('deck_id').unsigned().references('id').inTable('decks').onDelete('CASCADE')
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at').notNullable()
+      table.timestamp('updated_at').notNullable()
     })
   }
 
