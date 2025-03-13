@@ -28,4 +28,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+
+  async verifyPassword(plainPassword: string): Promise<boolean> {
+    return await hash.verify(plainPassword, this.password)
+  }
 }
