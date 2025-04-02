@@ -11,7 +11,6 @@ export default class extends BaseSeeder {
         password: 'Administrator',
         createdAt: DateTime.now(),
         updatedAt: null,
-        id: 1,
       },
       {
         isAdmin: false,
@@ -19,8 +18,6 @@ export default class extends BaseSeeder {
         password: 'password1',
         createdAt: DateTime.now(),
         updatedAt: null,
-        //pas besoin de spécifier les id car elles sont autoincrément
-        //id: 2,
       },
       {
         isAdmin: false,
@@ -28,7 +25,6 @@ export default class extends BaseSeeder {
         password: 'password2',
         createdAt: DateTime.now(),
         updatedAt: null,
-        //id: 3,
       },
       {
         isAdmin: false,
