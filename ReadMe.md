@@ -5,3 +5,5 @@
 4. run command: npm run dev
 5. go to http://localhost:3333/ for the website
 6. go to http://localhost:8081/ for the db on PhpMyAdmin
+
+.
