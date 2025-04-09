@@ -103,49 +103,48 @@ export default class DeckController {
     }
   }
   
-  async storeCard({ request, response, params, session }: HttpContext) {
-    try {
-      const deck = await Deck.findOrFail(params.id)
-      const question = request.input('question', '').trim()
-      const answer = request.input('answer', '').trim()
+async storeCard({ request, response, params, session }: HttpContext) {
+  try {
+    const deck = await Deck.findOrFail(params.id)
+    const question = request.input('question', '').trim()
+    const answer = request.input('answer', '').trim()
 
-      // Validate question length
-      if (question.length < 10) {
-        session.flash('error', 'La question doit contenir au moins 10 caractères')
-        return response.redirect().back()
-      }
-
-      // Check for duplicate question
-      const existingCard = await Card.query()
-        .where('deck_id', deck.id)
-        .where('question', question)
-        .first()
-
-      if (existingCard) {
-        session.flash('error', 'Une carte avec cette question existe déjà dans ce deck')
-        return response.redirect().back()
-      }
-
-      const card = await Card.create({
-        question,
-        answer,
-        deckId: deck.id
-      })
-
-      session.flash('success', 'Carte créée avec succès!')
-      return response.redirect().toRoute('deck.show', { id: deck.id })
-    } catch (error) {
-      console.error('Error in storeCard:', error)
-      session.flash('error', 'Une erreur est survenue lors de la création de la carte')
+    // Validate question length
+    if (question.length < 10) {
+      session.flash('error', 'La question doit contenir au moins 10 caractères')
       return response.redirect().back()
     }
-  }
 
-  async showCard({ params, view }: HttpContext) {
-    const card = await Card.findOrFail(params.cardId)
-    await card.load('deck')
-    return view.render('pages/card/show', { card })
+    // Check for duplicate question
+    const existingCard = await Card.query()
+      .where('deck_id', deck.id)
+      .where('question', question)
+      .first()
+
+    if (existingCard) {
+      session.flash('error', 'Une carte avec cette question existe déjà dans ce deck')
+      return response.redirect().back()
+    }
+
+    const card = await Card.create({
+      question,
+      answer,
+      deckId: deck.id
+    });  // Correction ici: point-virgule ajouté
+
+    session.flash('success', 'Carte créée avec succès!')
+    return response.redirect().toRoute('deck.show', { id: deck.id })
+  } catch (error) {
+    console.error('Error in storeCard:', error)
+    session.flash('error', 'Une erreur est survenue lors de la création de la carte')
+    return response.redirect().back()
   }
+}
+async showCard({ params, view, response }: HttpContext) {
+  const card = await Card.findOrFail(params.cardId)
+  await card.load('deck')
+  return view.render('pages/card/show', { card })
+}
 
   async deleteCard({ params, response, session }: HttpContext) {
     const card = await Card.findOrFail(params.cardId)
@@ -196,19 +195,18 @@ export default class DeckController {
     }
   }
 
-  async edit({ params, view, auth, response }: HttpContext) {
-    try {
-      const deck = await Deck.query()
-        .where('id', params.id)
-        .where('user_id', auth.user!.id)
-        .firstOrFail()
+async edit({ params, view, auth, response }: HttpContext) {
+  try {
+    const deck = await Deck.query()
+      .where('id', params.id)
+      .where('user_id', auth.user!.id)
+      .firstOrFail()
 
-      return view.render('pages/deck/edit', { deck })
-    } catch (error) {
-      return response.redirect().toRoute('decks.index')
-    }
+    return view.render('pages/deck/edit', { deck })
+  } catch (error) {
+    return response.redirect().toRoute('decks.index')
   }
-
+}
   async update({ params, request, response, auth, session }: HttpContext) {
     try {
       const deck = await Deck.query()
