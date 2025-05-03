@@ -4,7 +4,7 @@ FROM node:20-alpine
 WORKDIR /AdonisCode
 
 # Copier les fichiers de configuration pour installer les dépendances
-COPY package*.json ./
+COPY package*.json ./AdonisCode
 
 # Installer les dépendances
 RUN npm install
