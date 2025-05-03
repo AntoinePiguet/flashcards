@@ -1,11 +1,9 @@
 services:
   - type: web
     name: adonis-flashcards
-    env: node
+    env: docker
     plan: free
-    buildCommand: npm install && npm install pg && node ace build --production && npm prune --production
-    startCommand: node bin/server.js
-    healthCheckPath: /
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
@@ -37,8 +35,6 @@ services:
         fromDatabase:
           name: flashcards-db
           property: database
-    initialDeployHooks:
-      - node ace migration:run --force
 
 databases:
   - name: flashcards-db
