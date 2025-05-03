@@ -17,7 +17,26 @@ services:
         value: 10000
       - key: DB_CONNECTION
         value: pg
-      - fromGroup: flashcards-db
+      - key: DB_HOST
+        fromDatabase:
+          name: flashcards-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: flashcards-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: flashcards-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: flashcards-db
+          property: password
+      - key: DB_DATABASE
+        fromDatabase:
+          name: flashcards-db
+          property: database
 
 databases:
   - name: flashcards-db
