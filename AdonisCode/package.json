@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node bin/server.js",
     "build": "node ace build",
-    "dev": "node ace serve --hmr --host=0.0.0.0",
+    "dev": "node ace serve --hmr",
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -46,6 +46,7 @@
     "hot-hook": "^0.4.0",
     "pino-pretty": "^13.0.0",
     "prettier": "^3.4.2",
+    "ts-node-maintained": "^10.9.4",
     "typescript": "~5.7",
     "vite": "^6.0.3"
   },
@@ -61,10 +62,8 @@
     "edge.js": "^6.2.0",
     "luxon": "^3.5.0",
     "mysql2": "^3.12.0",
-    "peek-readable": "5.3.1",
-    "pg": "^8.15.6",
     "reflect-metadata": "^0.2.2",
-    "ts-node-maintained": "^10.9.4"
+    "peek-readable": "5.3.1"
   },
   "hotHook": {
     "boundaries": [
@@ -84,7 +83,4 @@
     }
   },
   "prettier": "@adonisjs/prettier-config"
-  
-  "render-build": "node ace migration:run --force && node ace db:seed --force"
-  
 }
