@@ -3,7 +3,7 @@ services:
     name: adonis-flashcards
     env: node
     plan: free
-    buildCommand: npm install && node ace build --production && npm prune --production
+    buildCommand: npm install && npm install pg && node ace build --production && npm prune --production
     startCommand: node bin/server.js
     healthCheckPath: /
     envVars:
@@ -37,6 +37,8 @@ services:
         fromDatabase:
           name: flashcards-db
           property: database
+    initialDeployHooks:
+      - node ace migration:run --force
 
 databases:
   - name: flashcards-db

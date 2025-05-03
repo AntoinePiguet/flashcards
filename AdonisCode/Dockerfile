@@ -4,11 +4,13 @@ FROM node:20-alpine
 WORKDIR /AdonisCode
 
 # Copier les fichiers de configuration pour installer les dépendances
-COPY package*.json ./AdonisCode
+COPY package*.json ./
 
-WORKDIR /AdonisCode
 # Installer les dépendances
 RUN npm install
+
+# Installer le module pg pour PostgreSQL
+RUN npm install pg
 
 # Copier le reste des fichiers de l'application
 COPY . .
