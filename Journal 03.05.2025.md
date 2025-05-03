@@ -22,3 +22,13 @@ puis deepseek qui m'a aussi aidé un peu mais pas des masses.
 
 En bref j'ai testé beaucoup de choses différentes pour essayer de faire fonctioner le nuiuld et la db postgres, mais les résultats ne sont pas suffisants.
 je vais donc continuer a chercher de la documentation et peut etre un tuto ou quelque chose qui me donne une petite idée de ce que  je suis en train de faire et qui me permette de comprendre ce qui ne vas pas dans ma prod.
+
+les tutos que j'ai regardé:
+https://www.youtube.com/watch?v=8bHi_VTmGVs
+https://www.youtube.com/watch?v=hNRxn5sKOdE
+https://www.youtube.com/watch?v=hGYNW8-_c3U
+
+Ce que j'ai appris:
+1) que dans l'environnement de la db Render, il y avait non pas 1 nais 2 db:url.
+2) que c'est visiblement possible de créer des webapp avec tout et n'importe quoi
+3) que ça a l'air complexe, j'hésite a passer sur un autre hebergeur qui accepte mysql car je connais déja beaucoup plus
