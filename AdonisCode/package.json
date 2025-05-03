@@ -84,4 +84,7 @@
     }
   },
   "prettier": "@adonisjs/prettier-config"
+  
+  "render-build": "node ace migration:run --force && node ace db:seed --force"
+  
 }
