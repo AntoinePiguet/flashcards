@@ -1,30 +1,26 @@
 FROM node:20-alpine
 
-# Définir le répertoire de travail
+# Create app directory
 WORKDIR /app
 
-# Copier le contenu du dossier AdonisCode
-COPY ./AdonisCode /app
+# Copy package files first for better caching
+COPY package*.json ./
+COPY .npmrc ./
 
-# Installer les dépendances
+# Install dependencies
 RUN npm install
 
-# Installer le module pg pour PostgreSQL
-RUN npm install pg
+# Copy all other files
+COPY . .
 
-# Build pour la production
+# Build for production
 RUN npm run build
 
-# Supprimer les devDependencies après le build
+# Clean up dev dependencies
 RUN npm prune --production
 
-# Exposer le port
+# Expose port
 EXPOSE 10000
 
-# Définir les variables d'environnement pour la production
-ENV HOST=0.0.0.0
-ENV PORT=10000
-ENV NODE_ENV=production
-
-# Le point d'entrée
+# Runtime environment variables will be provided by Render
 CMD ["node", "bin/server.js"]
