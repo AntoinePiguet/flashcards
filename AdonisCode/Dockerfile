@@ -6,6 +6,7 @@ WORKDIR /AdonisCode
 # Copier les fichiers de configuration pour installer les dépendances
 COPY package*.json ./AdonisCode
 
+WORKDIR /AdonisCode
 # Installer les dépendances
 RUN npm install
 
