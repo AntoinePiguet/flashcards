@@ -32,3 +32,10 @@ Ce que j'ai appris:
 1) que dans l'environnement de la db Render, il y avait non pas 1 nais 2 db:url.
 2) que c'est visiblement possible de créer des webapp avec tout et n'importe quoi
 3) que ça a l'air complexe, j'hésite a passer sur un autre hebergeur qui accepte mysql car je connais déja beaucoup plus
+
+
+en regardant sur internet et internet m'a dit que l'hebergeur _*fly.io*_ est plus simple, plus performent et prends en charge mysql comparé a render ça fait rêver.
+j'ai donc choisi de changer d'hebergeur et donc de revenir a la version dockerisée simple avant les modif pour la prod car je pense que j'ai fait des choses incohérentes 
+et complexe pour rien et je préfére repartir de quelque chose de stable pour aller vers l'avant.
+
+Je repars donc d'une version dockerisée avant la mise en prod pour faire une mise en prod travaillée et bien avec Fly.io
