@@ -1,0 +1,5 @@
+# forward the MySQL server port to your local machine using fly proxy:
+flyctl proxy 3306 -a db-flashcards
+
+# Then connect to your MySQL server at localhost:3306 and the username and password credentials from above:
+mysql --protocol=tcp -h localhost -P 3306 -u admin -proot db-flashcards
