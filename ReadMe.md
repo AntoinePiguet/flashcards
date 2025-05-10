@@ -554,3 +554,13 @@ This setup separates your database from your application, providing better scala
 - **Database Backups**: Set up regular backups of your database volume
 - **Monitoring**: Use `fly logs` and `fly status` to keep an eye on your application
 - **Scaling**: Adjust the VM size based on your application's needs
+
+
+## Useful documentation
+
+the official fly.io documentation : https://fly.io/docs/
+a good video about how to deploy an app for production using fly.io : https://www.youtube.com/watch?v=HGKO4FC_C70
+the official documentation about dockerfiles : https://docs.docker.com/reference/dockerfile/
+
+AI's are also useful if you encounter a problem or an error that you dont understand
+i strongly recommand using Claude.ai or ChatGPT if you want an AI to help you build your project
