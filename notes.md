@@ -5,7 +5,7 @@ _notes du 07.05.25_
 2. Déployer en production via fly.io
 
 - avec docker
-  ~70%
+  100%
 
 3. README 5%
 
