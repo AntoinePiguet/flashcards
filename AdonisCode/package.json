@@ -58,12 +58,14 @@
     "@adonisjs/shield": "^8.1.1",
     "@adonisjs/static": "^1.1.1",
     "@adonisjs/vite": "^4.0.0",
+    "@types/bcryptjs": "^2.4.6",
     "@vinejs/vine": "^3.0.0",
-    "edge.js": "^6.2.0",
+    "bcryptjs": "^3.0.2",
+    "edge.js": "^6.2.1",
     "luxon": "^3.5.0",
     "mysql2": "^3.12.0",
-    "reflect-metadata": "^0.2.2",
-    "peek-readable": "5.3.1"
+    "peek-readable": "5.3.1",
+    "reflect-metadata": "^0.2.2"
   },
   "hotHook": {
     "boundaries": [

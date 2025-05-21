@@ -23,7 +23,7 @@ export default class AuthController {
         // Verify password and login
         await user.verifyPassword(payload.password)
         await auth.use('web').login(user)
-        
+
         console.log('Authentication successful')
         session.flash('success', 'Connexion réussie! Bienvenue!')
         return response.redirect().toRoute('home')
@@ -68,7 +68,10 @@ export default class AuthController {
         if (errorMessages.length > 0 && errorMessages[0].length > 0) {
           const errorMessage = errorMessages[0][0]
           if (errorMessage.toLowerCase().includes('unique')) {
-            session.flash('error', "Ce nom d'utilisateur est déjà pris. Veuillez en choisir un autre.")
+            session.flash(
+              'error',
+              "Ce nom d'utilisateur est déjà pris. Veuillez en choisir un autre."
+            )
           } else if (errorMessage.toLowerCase().includes('minlength')) {
             session.flash('error', 'Le mot de passe doit contenir au moins 6 caractères.')
           } else if (errorMessage.toLowerCase().includes('same as')) {

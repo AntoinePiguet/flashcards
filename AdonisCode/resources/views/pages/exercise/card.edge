@@ -1,5 +1,5 @@
 @component('components/layout', { title: 'Exercice' })
-  <div class="exercise-container">
+  <div class="exercise-container" data-mode="{{ exerciseModeValue }}">
     <div class="exercise-header">
       <h1>
         Exercice
@@ -7,6 +7,16 @@
       <p class="deck-name">
         Deck: {{ deck.name }}
       </p>
+      <p>Debug: Mode value received: {{ exerciseModeValue }} (Type: {{ typeof exerciseModeValue }})</p>
+      @if(exerciseModeValue === '2')
+        <script>console.log('Edge template entered timed mode conditional block.');</script>
+        <div class="timer">
+          Temps écoulé: <span id="elapsed-time">00:00</span>
+        </div>
+        <script>
+          window.currentExerciseMode = "2";
+        </script>
+      @endif
     </div>
 
     <div class="card-container">
@@ -282,8 +292,55 @@
       answerInput.value = userAnswerText.textContent;
       form.appendChild(csrfInput);
       form.appendChild(answerInput);
+      // Ajouter le temps écoulé si en mode chronométré (mode 2)
+      const mode = window.currentExerciseMode; // Lire le mode depuis la variable globale
+      if (mode === "2") {
+        const elapsedTimeSpan = document.getElementById("elapsed-time");
+        const elapsedTimeInput = document.createElement("input");
+        elapsedTimeInput.type = "hidden";
+        elapsedTimeInput.name = "elapsed_time";
+        elapsedTimeInput.value = elapsedTimeSpan.textContent; // Envoyer le texte affiché par le minuteur
+        form.appendChild(elapsedTimeInput);
+      }
       document.body.appendChild(form);
       form.submit();
+    }
+    // Ajouter le script du minuteur si en mode chronométré (mode 2)
+    
+    const mode = window.currentExerciseMode; // Lire le mode depuis la variable globale
+    
+    console.log("Mode variable from injected script:", mode); // Log pour afficher la variable JS
+    
+    console.log("Type of mode variable from injected script:", typeof mode); // Log pour afficher le type de la variable JS
+    
+    if (mode === "2") {
+      console.log("Exercise mode is timed (mode 2) - starting timer."); // Log pour vérifier le mode
+      // Récupérer le temps de début depuis la session, passé en tant que data dans la vue
+      const startTime = {{ session.get('exercise_start_time') }};
+      console.log("Exercise start time from session:", startTime); // Log pour vérifier le temps de début
+      const elapsedTimeSpan = document.getElementById("elapsed-time");
+      if (elapsedTimeSpan && startTime) {
+        // S'assurer que l'élément du minuteur existe et que le temps de début est valide
+        function updateTimer() {
+          const now = Date.now();
+          const elapsedMilliseconds = now - startTime;
+          const totalSeconds = Math.floor(elapsedMilliseconds / 1e3);
+          const minutes = Math.floor(totalSeconds / 60);
+          const seconds = totalSeconds % 60;
+          const formattedTime = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+          elapsedTimeSpan.textContent = formattedTime;
+        }
+        // Lancer la première mise à jour immédiatement
+        updateTimer();
+        // Mettre à jour le minuteur toutes les secondes
+        setInterval(updateTimer, 1e3);
+      } else if (!elapsedTimeSpan) {
+        console.error("Timer element not found in card view."); // Log si l'élément du minuteur est manquant
+      } else if (!startTime) {
+        console.error("Exercise start time is null or undefined when trying to start timer."); // Log si le temps de début n\'est pas valide
+      }
+    } else {
+      console.log("Exercise mode is not timed (mode is:", mode, "). Timer not started."); // Log si le mode n'est pas 2
     }
   </script>
 @endcomponent
