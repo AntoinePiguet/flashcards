@@ -146,11 +146,18 @@ export default class DeckController {
     return view.render('pages/card/show', { card })
   }
 
-  async deleteCard({ params, response }: HttpContext) {
-    const card = await Card.findOrFail(params.cardId)
-    const deckId = card.deckId
-    await card.delete()
-    return response.redirect().toRoute('deck.show', { id: deckId })
+  async deleteCard({ params, response, session }: HttpContext) {
+    try {
+      const card = await Card.findOrFail(params.cardId)
+      const deckId = card.deckId
+      await card.delete()
+      session.flash('success', 'Carte supprimée avec succès!')
+      return response.redirect().toRoute('deck.show', { id: deckId })
+    } catch (error) {
+      console.error('Error deleting card:', error)
+      session.flash('error', 'Une erreur est survenue lors de la suppression de la carte')
+      return response.redirect().back()
+    }
   }
 
   async editCard({ params, view }: HttpContext) {
@@ -260,15 +267,22 @@ export default class DeckController {
         .where('user_id', auth.user!.id)
         .firstOrFail()
 
-      await Database.transaction(async (trx) => {
-        // Delete all cards in the deck
-        await Card.query({ client: trx }).where('deck_id', deck.id).delete()
+      // Désactiver temporairement les contraintes de clé étrangère
+      await Database.rawQuery('SET FOREIGN_KEY_CHECKS = 0')
 
-        // Delete the deck
+      try {
+        // Supprimer d'abord toutes les cartes
+        await Card.query().where('deck_id', deck.id).delete()
+
+        // Puis supprimer le deck
         await deck.delete()
-      })
 
-      session.flash('success', 'Deck supprimé avec succès!')
+        session.flash('success', 'Deck supprimé avec succès!')
+      } finally {
+        // Réactiver les contraintes de clé étrangère
+        await Database.rawQuery('SET FOREIGN_KEY_CHECKS = 1')
+      }
+
       return response.redirect().toRoute('decks.index')
     } catch (error) {
       console.error('Error deleting deck:', error)

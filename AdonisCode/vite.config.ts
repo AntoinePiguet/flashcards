@@ -16,4 +16,14 @@ export default defineConfig({
       reload: ['resources/views/**/*.edge'],
     }),
   ],
+  server: {
+    host: 'localhost',
+    port: 24678,
+    strictPort: true,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 24678,
+    },
+  },
 })
