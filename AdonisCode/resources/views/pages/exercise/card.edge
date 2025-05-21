@@ -1,0 +1,289 @@
+@component('components/layout', { title: 'Exercice' })
+  <div class="exercise-container">
+    <div class="exercise-header">
+      <h1>
+        Exercice
+      </h1>
+      <p class="deck-name">
+        Deck: {{ deck.name }}
+      </p>
+    </div>
+
+    <div class="card-container">
+      <input type="checkbox" id="flipper" class="flipper" hidden />
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-front">
+            <div class="card-content">
+              <h2>
+                Question
+              </h2>
+              <p>
+                {{ card.question }}
+              </p>
+            </div>
+          </div>
+          <div class="card-back">
+            <div class="card-content">
+              <h2>
+                Réponse
+              </h2>
+              <p>
+                {{ card.answer }}
+              </p>
+              <div class="answer-comparison">
+                <div class="user-answer">
+                  <h3>
+                    Votre réponse
+                  </h3>
+                  <p id="userAnswerText">
+                  </p>
+                </div>
+                <div class="correct-answer">
+                  <h3>
+                    Réponse correcte
+                  </h3>
+                  <p>
+                    {{ card.answer }}
+                  </p>
+                </div>
+              </div>
+              <div class="next-card-button" style="display: none;">
+                <button onclick="submitAnswer()" class="btn btn-primary">
+                  <i class="fas fa-arrow-right"></i>Carte suivante
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="answer-form">
+        <form id="answerForm" onsubmit="handleSubmit(event)">
+          <div class="input-group">
+            <input type="text" id="answerInput" placeholder="Entrez votre réponse..." required autocomplete="off" />
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-check"></i>Valider
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .exercise-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .exercise-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .exercise-header h1 {
+      margin: 0;
+      color: #1f2937;
+    }
+    
+    .deck-name {
+      color: #6b7280;
+      margin-top: 0.5rem;
+    }
+    
+    .card-container {
+      perspective: 1000px;
+      margin: 0 auto;
+      max-width: 600px;
+    }
+    
+    .card {
+      display: block;
+      width: 100%;
+      height: 400px;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+    }
+    
+    .flipper:checked ~ .card {
+      transform: rotateY(180deg);
+    }
+    
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+    }
+    
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background: white;
+      padding: 2rem;
+    }
+    
+    .card-back {
+      transform: rotateY(180deg);
+    }
+    
+    .card-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    
+    .card-content h2 {
+      margin: 0 0 1rem;
+      color: #1f2937;
+    }
+    
+    .card-content p {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #374151;
+      line-height: 1.5;
+    }
+    
+    .answer-comparison {
+      margin-top: 2rem;
+      width: 100%;
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+    }
+    
+    .user-answer,
+    .correct-answer {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 8px;
+      background: #f8fafc;
+    }
+    
+    .user-answer h3,
+    .correct-answer h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+      color: #6b7280;
+    }
+    
+    .user-answer p,
+    .correct-answer p {
+      margin: 0;
+      font-size: 1rem;
+      color: #1f2937;
+    }
+    
+    .next-card-button {
+      margin-top: 2rem;
+    }
+    
+    .answer-form {
+      margin-top: 2rem;
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .input-group input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    
+    @media (max-width: 640px) {
+      .input-group {
+        flex-direction: column;
+      }
+    
+      .answer-comparison {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      const answerInput = document.getElementById("answerInput");
+      const userAnswerText = document.getElementById("userAnswerText");
+      const flipper = document.getElementById("flipper");
+      const nextCardButton = document.querySelector(".next-card-button");
+      // Stocker la réponse de l'utilisateur
+      userAnswerText.textContent = answerInput.value;
+      // Retourner la carte
+      flipper.checked = true;
+      // Désactiver le formulaire
+      answerInput.disabled = true;
+      event.target.querySelector("button").disabled = true;
+      // Afficher le bouton "Carte suivante"
+      nextCardButton.style.display = "block";
+    }
+    
+    function submitAnswer() {
+      const userAnswerText = document.getElementById("userAnswerText");
+      // Créer et soumettre le formulaire
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "{{ route('deck.exercise.answer', { id: deck.id, cardId: card.id }) }}";
+      const csrfInput = document.createElement("input");
+      csrfInput.type = "hidden";
+      csrfInput.name = "_csrf";
+      csrfInput.value = "{{ csrfToken }}";
+      const answerInput = document.createElement("input");
+      answerInput.type = "hidden";
+      answerInput.name = "answer";
+      answerInput.value = userAnswerText.textContent;
+      form.appendChild(csrfInput);
+      form.appendChild(answerInput);
+      document.body.appendChild(form);
+      form.submit();
+    }
+  </script>
+@endcomponent

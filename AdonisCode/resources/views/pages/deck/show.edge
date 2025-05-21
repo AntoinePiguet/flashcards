@@ -6,7 +6,7 @@
         {{ flashMessages.get('success') }}
       </div>
     @endif
-
+    
     <div class="deck-header">
       <div class="deck-info">
         <h1>
@@ -18,8 +18,13 @@
           </p>
         @endif
       </div>
-      
+
       <div class="deck-actions">
+        @if(deck.cards.length > 0)
+          <a href="{{ route('deck.exercise.start', { id: deck.id }) }}" class="btn btn-success">
+            <i class="fas fa-play"></i>S'exercer
+          </a>
+        @endif
         <a href="{{ route('deck.edit', { id: deck.id }) }}" class="btn btn-secondary">
           <i class="fas fa-edit"></i>Modifier
         </a>
@@ -59,8 +64,12 @@
   {{-- Delete confirmation modal --}}
   <div id="deleteModal" class="modal" style="display: none;">
     <div class="modal-content">
-      <h2>Confirmer la suppression</h2>
-      <p>Êtes-vous sûr de vouloir supprimer ce deck et toutes ses cartes ? Cette action est irréversible.</p>
+      <h2>
+        Confirmer la suppression
+      </h2>
+      <p>
+        Êtes-vous sûr de vouloir supprimer ce deck et toutes ses cartes ? Cette action est irréversible.
+      </p>
       <div class="modal-actions">
         <button onclick="closeModal()" class="btn btn-secondary">
           <i class="fas fa-times"></i>Annuler
@@ -81,7 +90,7 @@
       margin: 0 auto;
       padding: 2rem;
     }
-
+    
     .success-message {
       background: #dcfce7;
       color: #166534;
@@ -92,7 +101,7 @@
       align-items: center;
       gap: 0.5rem;
     }
-
+    
     .deck-header {
       display: flex;
       justify-content: space-between;
@@ -101,27 +110,27 @@
       flex-wrap: wrap;
       gap: 1rem;
     }
-
+    
     .deck-info {
       flex: 1;
     }
-
+    
     .deck-info h1 {
       margin: 0;
       color: #1f2937;
     }
-
+    
     .deck-description {
       margin: 0.5rem 0 0;
       color: #6b7280;
     }
-
+    
     .deck-actions {
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
     }
-
+    
     .empty-state {
       text-align: center;
       padding: 3rem;
@@ -129,13 +138,13 @@
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-
+    
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1rem;
     }
-
+    
     .card-item {
       background: white;
       padding: 1.5rem;
@@ -145,17 +154,17 @@
       color: inherit;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-
+    
     .card-item:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
+    
     .card-content h3 {
       margin: 0;
       color: #1f2937;
     }
-
+    
     .btn {
       display: inline-flex;
       align-items: center;
@@ -169,38 +178,47 @@
       cursor: pointer;
       font-size: 1rem;
     }
-
+    
     .btn-primary {
       background: #2563eb;
       color: white;
     }
-
+    
     .btn-primary:hover {
       background: #1d4ed8;
     }
-
+    
     .btn-secondary {
       background: #6b7280;
       color: white;
     }
-
+    
     .btn-secondary:hover {
       background: #4b5563;
     }
-
+    
     .btn-danger {
       background: #dc2626;
       color: white;
     }
-
+    
     .btn-danger:hover {
       background: #b91c1c;
     }
-
+    
+    .btn-success {
+      background: #22c55e;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #15803d;
+    }
+    
     .btn i {
       font-size: 0.875rem;
     }
-
+    
     .modal {
       position: fixed;
       top: 0;
@@ -213,7 +231,7 @@
       justify-content: center;
       z-index: 1000;
     }
-
+    
     .modal-content {
       background: white;
       padding: 2rem;
@@ -221,32 +239,32 @@
       max-width: 500px;
       width: 90%;
     }
-
+    
     .modal-content h2 {
       margin: 0 0 1rem;
       color: #1f2937;
     }
-
+    
     .modal-actions {
       display: flex;
       gap: 1rem;
       margin-top: 2rem;
     }
-
+    
     @media (max-width: 640px) {
       .deck-header {
         flex-direction: column;
       }
-
+    
       .deck-actions {
         width: 100%;
       }
-
+    
       .btn {
         width: 100%;
         justify-content: center;
       }
-
+    
       .modal-actions {
         flex-direction: column;
       }
@@ -255,19 +273,19 @@
 
   <script>
     function confirmDelete() {
-      document.getElementById('deleteModal').style.display = 'flex'
+      document.getElementById("deleteModal").style.display = "flex";
     }
-
+    
     function closeModal() {
-      document.getElementById('deleteModal').style.display = 'none'
+      document.getElementById("deleteModal").style.display = "none";
     }
-
     // Close modal when clicking outside
+    
     window.onclick = function(event) {
-      const modal = document.getElementById('deleteModal')
+      const modal = document.getElementById("deleteModal");
       if (event.target === modal) {
-        closeModal()
+        closeModal();
       }
-    }
+    };
   </script>
 @endcomponent

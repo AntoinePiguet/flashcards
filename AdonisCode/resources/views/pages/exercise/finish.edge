@@ -1,0 +1,192 @@
+@component('components/layout', { title: 'Résultats de l\'exercice' })
+  <div class="results-container">
+    <div class="results-header">
+      <h1>
+        Résultats de l'exercice
+      </h1>
+      <p class="deck-name">
+        Deck: {{ deck.name }}
+      </p>
+    </div>
+
+    <div class="results-content">
+      <div class="score-card">
+        <div class="score-circle">
+          <span class="score-value">{{ score }}%</span>
+        </div>
+        <div class="score-details">
+          <p>
+            {{ correctAnswers }} réponses correctes sur {{ totalCards }} cartes
+          </p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>
+            Réponses correctes
+          </h3>
+          <p class="stat-value correct">
+            {{ correctAnswers }}
+          </p>
+        </div>
+        <div class="stat-card">
+          <h3>
+            Réponses incorrectes
+          </h3>
+          <p class="stat-value incorrect">
+            {{ totalCards - correctAnswers }}
+          </p>
+        </div>
+        <div class="stat-card">
+          <h3>
+            Taux de réussite
+          </h3>
+          <p class="stat-value">
+            {{ score }}%
+          </p>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <a href="{{ route('deck.exercise.start', { id: deck.id }) }}" class="btn btn-primary">
+          <i class="fas fa-redo"></i>Recommencer
+        </a>
+        <a href="{{ route('deck.show', { id: deck.id }) }}" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i>Retour au deck
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .results-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .results-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .results-header h1 {
+      margin: 0;
+      color: #1f2937;
+    }
+    
+    .deck-name {
+      color: #6b7280;
+      margin-top: 0.5rem;
+    }
+    
+    .results-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .score-card {
+      text-align: center;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .score-circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .score-value {
+      font-size: 3rem;
+      font-weight: bold;
+      color: white;
+    }
+    
+    .score-details {
+      font-size: 1.25rem;
+      color: #374151;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    
+    .stat-card h3 {
+      margin: 0 0 0.5rem;
+      color: #6b7280;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    
+    .stat-value {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    
+    .stat-value.correct {
+      color: #059669;
+    }
+    
+    .stat-value.incorrect {
+      color: #dc2626;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+    
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+  </style>
+@endcomponent

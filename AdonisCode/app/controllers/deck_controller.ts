@@ -299,4 +299,102 @@ export default class DeckController {
       return response.redirect().back()
     }
   }
+
+  async startExercise({ params, view, session }: HttpContext) {
+    try {
+      const deck = await Deck.findOrFail(params.id)
+      await deck.load('cards')
+
+      if (deck.cards.length === 0) {
+        session.flash(
+          'error',
+          "Ce deck ne contient pas de cartes. Ajoutez des cartes avant de commencer l'exercice."
+        )
+        return response.redirect().toRoute('deck.show', { id: deck.id })
+      }
+
+      return view.render('pages/exercise/start', { deck })
+    } catch (error) {
+      console.error('Error starting exercise:', error)
+      session.flash('error', "Une erreur est survenue lors du démarrage de l'exercice")
+      return response.redirect().back()
+    }
+  }
+
+  async showExerciseCard({ params, view, session }: HttpContext) {
+    try {
+      const deck = await Deck.findOrFail(params.id)
+      const card = await Card.findOrFail(params.cardId)
+
+      if (card.deckId !== deck.id) {
+        session.flash('error', "Cette carte n'appartient pas à ce deck")
+        return response.redirect().toRoute('deck.show', { id: deck.id })
+      }
+
+      return view.render('pages/exercise/card', { deck, card })
+    } catch (error) {
+      console.error('Error showing exercise card:', error)
+      session.flash('error', "Une erreur est survenue lors de l'affichage de la carte")
+      return response.redirect().back()
+    }
+  }
+
+  async submitAnswer({ params, request, response, session }: HttpContext) {
+    try {
+      const deck = await Deck.findOrFail(params.id)
+      const card = await Card.findOrFail(params.cardId)
+      const userAnswer = request.input('answer', '').trim().toLowerCase()
+      const correctAnswer = card.answer.trim().toLowerCase()
+
+      // Stocker la réponse dans la session
+      const answers = session.get('exercise_answers', {})
+      answers[card.id] = userAnswer === correctAnswer
+      session.put('exercise_answers', answers)
+
+      // Trouver la prochaine carte
+      const nextCard = await Card.query()
+        .where('deck_id', deck.id)
+        .where('id', '>', card.id)
+        .orderBy('id', 'asc')
+        .first()
+
+      if (nextCard) {
+        return response
+          .redirect()
+          .toRoute('deck.exercise.card', { id: deck.id, cardId: nextCard.id })
+      } else {
+        return response.redirect().toRoute('deck.exercise.finish', { id: deck.id })
+      }
+    } catch (error) {
+      console.error('Error submitting answer:', error)
+      session.flash('error', 'Une erreur est survenue lors de la soumission de la réponse')
+      return response.redirect().back()
+    }
+  }
+
+  async finishExercise({ params, view, session }: HttpContext) {
+    try {
+      const deck = await Deck.findOrFail(params.id)
+      const answers = session.get('exercise_answers', {})
+
+      // Calculer les statistiques
+      const totalCards = Object.keys(answers).length
+      const correctAnswers = Object.values(answers).filter(Boolean).length
+      const score = Math.round((correctAnswers / totalCards) * 100)
+
+      // Nettoyer la session
+      session.forget('exercise_answers')
+
+      return view.render('pages/exercise/finish', {
+        deck,
+        score,
+        totalCards,
+        correctAnswers,
+      })
+    } catch (error) {
+      console.error('Error finishing exercise:', error)
+      session.flash('error', "Une erreur est survenue lors de la fin de l'exercice")
+      return response.redirect().toRoute('deck.show', { id: params.id })
+    }
+  }
 }

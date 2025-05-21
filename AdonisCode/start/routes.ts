@@ -79,7 +79,23 @@ router
     router.post('/decks/:id/cards', [DeckController, 'storeCard']).as('deck.cards.store')
     router.get('/decks/:id/cards/:cardId', [DeckController, 'showCard']).as('deck.cards.show')
     router.get('/decks/:id/cards/:cardId/edit', [DeckController, 'editCard']).as('deck.cards.edit')
-    router.post('/decks/:id/cards/:cardId/update', [DeckController, 'updateCard']).as('deck.cards.update')
-    router.post('/decks/:id/cards/:cardId/delete', [DeckController, 'deleteCard']).as('deck.cards.delete')
+    router
+      .post('/decks/:id/cards/:cardId/update', [DeckController, 'updateCard'])
+      .as('deck.cards.update')
+    router
+      .post('/decks/:id/cards/:cardId/delete', [DeckController, 'deleteCard'])
+      .as('deck.cards.delete')
+
+    // Exercise routes
+    router.get('/decks/:id/exercise', [DeckController, 'startExercise']).as('deck.exercise.start')
+    router
+      .get('/decks/:id/exercise/card/:cardId', [DeckController, 'showExerciseCard'])
+      .as('deck.exercise.card')
+    router
+      .post('/decks/:id/exercise/card/:cardId/answer', [DeckController, 'submitAnswer'])
+      .as('deck.exercise.answer')
+    router
+      .get('/decks/:id/exercise/finish', [DeckController, 'finishExercise'])
+      .as('deck.exercise.finish')
   })
   .middleware([middleware.auth()])
