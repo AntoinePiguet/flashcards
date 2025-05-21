@@ -49,7 +49,7 @@ export default class DeckController {
         .first()
 
       if (existingDeck) {
-        session.flash('error', 'Vous avez déjà un deck avec ce nom')
+        session.flash('error', 'Vous avez déjà un deck avec ce nom. Veuillez en choisir un autre.')
         return response.redirect().back()
       }
 
@@ -115,6 +115,12 @@ export default class DeckController {
         return response.redirect().back()
       }
 
+      // Validate answer
+      if (!answer) {
+        session.flash('error', 'La réponse ne peut pas être vide')
+        return response.redirect().back()
+      }
+
       // Check for duplicate question
       const existingCard = await Card.query()
         .where('deck_id', deck.id)
@@ -122,7 +128,10 @@ export default class DeckController {
         .first()
 
       if (existingCard) {
-        session.flash('error', 'Une carte avec cette question existe déjà dans ce deck')
+        session.flash(
+          'error',
+          'Une carte avec cette question existe déjà dans ce deck. Veuillez en choisir une autre.'
+        )
         return response.redirect().back()
       }
 
@@ -130,7 +139,7 @@ export default class DeckController {
         question,
         answer,
         deckId: deck.id,
-      }) // Correction ici: point-virgule ajouté
+      })
 
       session.flash('success', 'Carte créée avec succès!')
       return response.redirect().toRoute('deck.show', { id: deck.id })
