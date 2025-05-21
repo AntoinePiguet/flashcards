@@ -1,8 +1,12 @@
-if you have docker desktop installed on your computer, 
-1) open a BASH terminal with a path going to /AdonisCode
-2) run command: ./docker-start.sh
-it will create the containers, install the dependencies, do the migrations and start the server on localhost:3333
+**Directives To Start The Website In Dev Mode**
 
+if you have docker desktop installed on your computer (if not, install docker desktop)
+
+0. clone https://github.com/AntoinePiguet/flashcards
+1. open a BASH terminal with a path going to /AdonisCode
+2. run command: ./docker-start.sh
+   it will create the containers, install the dependencies, do the migrations and start the server on localhost:${RandomPort}
+3. Copy the localhost adress and paste it in your browser and bim you're on the website
 
 # Step-by-Step Guide: Dockerizing flashcards
 
@@ -10,12 +14,13 @@ Starting with just an Adonis application and a Docker setup for the database, we
 
 ## Prerequisites
 
-* Docker Desktop installed on your pc
-* The zip file from my git: https://github.com/AntoinePiguet/flashcards
+- Docker Desktop installed on your pc
+- The zip file from my git: https://github.com/AntoinePiguet/flashcards
 
 ## Step 1: Analyze the Current Setup
 
 Initially, you have:
+
 - An Adonis.js application running locally
 - A `docker-compose.yml` file that only sets up MySQL and phpMyAdmin
 
@@ -49,6 +54,7 @@ CMD ["npm", "run", "dev"]
 ```
 
 This Dockerfile:
+
 - Uses Node.js 20 with Alpine Linux
 - Sets up the "root" directory where we will do all our commands (visualize it as opening a terminal in a directory)
 - Installs netcat (used to check if the database is ready before starting the app)
@@ -66,7 +72,7 @@ TZ=UTC
 PORT=3333
 HOST=localhost
 LOG_LEVEL=info
-APP_KEY=uvaH65NR4ODuX4xzBdEb8DNlcNmfNQQX 
+APP_KEY=uvaH65NR4ODuX4xzBdEb8DNlcNmfNQQX
 NODE_ENV=development
 SESSION_DRIVER=cookie
 DB_HOST=127.0.0.1
@@ -77,7 +83,8 @@ DB_DATABASE=db_flashcards
 ```
 
 Key changes from the example:
-- Generated an APP_KEY (this one is an exemple, to get an app_key, run this command: _node ace generate:key_)
+
+- Generated an APP*KEY (this one is an exemple, to get an app_key, run this command: \_node ace generate:key*)
 - Updated the DB_PORT to match the exposed MySQL port (6033)
 - Updated the DB_DATABASE to your specific database name (db_flashcards)
 
@@ -86,7 +93,7 @@ Key changes from the example:
 Update your `docker-compose.yml` to include the Adonis application:
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   db:
@@ -160,6 +167,7 @@ volumes:
 ```
 
 Key changes:
+
 - Updated to version '3.8' for newer Docker Compose features
 - Added a network to connect all services
 - Added the `app` service for the Adonis application
@@ -177,6 +185,7 @@ Key changes:
 
 Create a `docker-start.sh` script for easier Docker management:
 (it let you start everything with only one command)
+
 ```bash
 #!/bin/bash
 
@@ -200,11 +209,13 @@ esac
 
 Make it executable:
 (to be able to start it the first time you have to give permission with this command)
+
 ```bash
 chmod +x docker-start.sh
 ```
 
 This script:
+
 - Has a default mode to build and start containers
 - Has a "clean" mode to remove all containers and volumes
 - Shows application logs after starting
@@ -216,23 +227,20 @@ This script:
 ```bash
 ./docker-start.sh
 ```
+
 2. Access the application at http://localhost:3333
 
 3. Access phpMyAdmin at http://localhost:8081
 
-
-
 ## Conclusion
 
-You've now successfully dockerized flashcards for local development. 
+You've now successfully dockerized flashcards for local development.
 
 The complete dockerized setup includes:
+
 - A MySQL database container
 - A phpMyAdmin container for database management
 - the Adonis.js application container with live code reloading (flashcards)
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -242,10 +250,10 @@ This guide explain the process of deploying a dockerized Adonis.js application t
 
 ## Prerequisites
 
-* An Adonis.js application already dockerized for development (flashcards) 
-    - you can download the dockerized app with my first realase at : https://github.com/AntoinePiguet/flashcards
-* fly.io CLI installed and authenticated
-* Basic knowledge of Docker and containerization
+- An Adonis.js application already dockerized for development (flashcards)
+  - you can download the dockerized app with my first realase at : https://github.com/AntoinePiguet/flashcards
+- fly.io CLI installed and authenticated
+- Basic knowledge of Docker and containerization
 
 ## Step 1: Install and Set Up the fly.io CLI
 
@@ -292,19 +300,21 @@ fly auth login
 Before deploying to fly.io, ensure your application is ready for production:
 
 1. Update your `.env` file with production settings:
+
    - Set `NODE_ENV=production`
    - Make sure `APP_KEY` is securely generated
-        * you can generate one with this command: _node ace generate:key_
+     - you can generate one with this command: _node ace generate:key_
    - Update database credentials for production
-        ```
-        DB_HOST=fly-db-hostname # Will be set to internal fly.io address later
-        DB_PORT=3306 # Default MySQL port
-        DB_USER=admin # As defined in your fly.toml for the database
-        DB_PASSWORD=your_secure_password # Will be set as a secret
-        DB_DATABASE=db-flashcards # As defined in your fly.toml for the database
-        ```
+     ```
+     DB_HOST=fly-db-hostname # Will be set to internal fly.io address later
+     DB_PORT=3306 # Default MySQL port
+     DB_USER=admin # As defined in your fly.toml for the database
+     DB_PASSWORD=your_secure_password # Will be set as a secret
+     DB_DATABASE=db-flashcards # As defined in your fly.toml for the database
+     ```
 
 2. Ensure your `package.json` includes dependencies for database connectivity:
+
    ```json
    {
      "dependencies": {
@@ -347,7 +357,7 @@ primary_region = 'cdg'
   memory = '2gb'
   cpu_kind = 'shared'
   cpus = 1
-  
+
 [processes]
   app = """--datadir /data/mysql \
    --default-authentication-plugin mysql_native_password"""
@@ -412,6 +422,7 @@ primary_region = 'fra'
 ```
 
 The important settings here are:
+
 - `internal_port`: Must match the port your Adonis app listens on (3333)
 - `auto_stop_machines`: Set to 'stop' to save costs when not in use
 - `memory`: 1GB RAM for the application
@@ -472,6 +483,7 @@ fly secrets set \
 
 Replace `fdaa:0:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx` with the actual internal IPv6 address of your database VM.
 (you can obtain it by running this command: _fly ips private -a db-flashcards_ db-flashcards is my db's name, obtain yours by runnig: _fly apps list_)
+
 ## Step 6: Deploy Your Adonis Application to fly.io
 
 1. Initialize your application with fly.io:
@@ -481,6 +493,7 @@ fly launch --no-deploy
 ```
 
 Select the appropriate options during the initialization process:
+
 - Choose the same region as your database or nearby (e.g., 'fra')
 - Skip automatic deployment when asked
 
@@ -554,7 +567,6 @@ This setup separates your database from your application, providing better scala
 - **Database Backups**: Set up regular backups of your database volume
 - **Monitoring**: Use `fly logs` and `fly status` to keep an eye on your application
 - **Scaling**: Adjust the VM size based on your application's needs
-
 
 ## Useful documentation
 
