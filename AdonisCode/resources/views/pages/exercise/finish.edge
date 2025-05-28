@@ -21,13 +21,6 @@
         </div>
       </div>
 
-      {{-- Afficher le temps écoulé si en mode chronométré (mode 2) --}}
-      @if(mode === '2' && elapsedTime !== null)
-        <div class="elapsed-time">
-          Temps total de l'exercice: <span class="time-value">{{ Math.floor(elapsedTime / 1000 / 60) }}:{{ String(Math.floor(elapsedTime / 1000) % 60).padStart(2, '0') }}</span>
-        </div>
-      @endif
-      
       <div class="stats-grid">
         <div class="stat-card">
           <h3>
@@ -123,18 +116,6 @@
     .score-details {
       font-size: 1.25rem;
       color: #374151;
-    }
-    
-    .elapsed-time {
-      text-align: center;
-      font-size: 1.5rem;
-      color: #1f2937;
-      margin-bottom: 2rem;
-    }
-    
-    .elapsed-time .time-value {
-      font-weight: bold;
-      color: #2563eb;
     }
     
     .stats-grid {

@@ -89,7 +89,7 @@ router
     // Exercise routes
     router.get('/decks/:id/exercise', [DeckController, 'startExercise']).as('deck.exercise.start')
     router
-      .get('/decks/:id/exercise/:mode/:cardId', [DeckController, 'showExerciseCard'])
+      .get('/decks/:id/exercise/card/:cardId', [DeckController, 'showExerciseCard'])
       .as('deck.exercise.card')
     router
       .post('/decks/:id/exercise/card/:cardId/answer', [DeckController, 'submitAnswer'])

@@ -10,40 +10,30 @@
     </div>
 
     <div class="exercise-content">
-      <h2>
-        Choisissez un mode d'exercice
-      </h2>
-      <div class="mode-options">
-        <div class="mode-card">
-          <h3>
-            Mode de base
-          </h3>
-          <p>
-            Répondez aux questions et comparez vos réponses.
-          </p>
-          <a href="/decks/{{ deck.id }}/exercise/1/{{ deck.cards[0].id }}" class="btn btn-primary">
-            <i class="fas fa-play"></i>Commencer
-          </a>
-        </div>
-
-        <div class="mode-card">
-          <h3>
-            Mode chronométré
-          </h3>
-          <p>
-            Testez votre rapidité en répondant à toutes les cartes le plus vite possible.
-          </p>
-          <a href="/decks/{{ deck.id }}/exercise/2/{{ deck.cards[0].id }}" class="btn btn-primary">
-            <i class="fas fa-stopwatch"></i>C'est parti !
-          </a>
+      <div class="mode-selection">
+        <h2>
+          Choisissez un mode
+        </h2>
+        <div class="mode-options">
+          <label class="mode-option">
+            <input type="radio" name="mode" value="basic" checked />
+            <span class="mode-label">Mode basique</span>
+            <span class="mode-description">Questions dans l'ordre, une seule tentative</span>
+          </label>
         </div>
       </div>
-    </div>
 
-    <div class="action-buttons">
-      <a href="{{ route('deck.show', { id: deck.id }) }}" class="btn btn-secondary">
-        <i class="fas fa-times"></i>Annuler
-      </a>
+      <div class="exercise-actions">
+        <a
+          href="{{ route('deck.exercise.card', { id: deck.id, cardId: deck.cards[0].id }) }}"
+          class="btn btn-primary"
+        >
+          <i class="fas fa-play"></i>C'est parti !
+        </a>
+        <a href="{{ route('deck.show', { id: deck.id }) }}" class="btn btn-secondary">
+          <i class="fas fa-times"></i>Annuler
+        </a>
+      </div>
     </div>
   </div>
 
@@ -70,48 +60,60 @@
     }
     
     .exercise-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .mode-selection {
       margin-bottom: 2rem;
     }
     
-    .exercise-content h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: #1f2937;
+    .mode-selection h2 {
+      margin: 0 0 1rem;
+      color: #374151;
     }
     
     .mode-options {
       display: flex;
-      gap: 2rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    
-    .mode-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      max-width: 300px;
-      flex: 1;
-      display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 1rem;
     }
     
-    .mode-card h3 {
-      margin: 0 0 0.5rem;
+    .mode-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .mode-option:hover {
+      border-color: #2563eb;
+      background: #f8fafc;
+    }
+    
+    .mode-option input[type="radio"] {
+      margin-top: 0.25rem;
+    }
+    
+    .mode-label {
+      font-weight: 500;
       color: #1f2937;
     }
     
-    .mode-card p {
+    .mode-description {
+      display: block;
       color: #6b7280;
-      font-size: 0.9rem;
-      margin-bottom: 1.5rem;
-      flex-grow: 1;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
     }
     
-    .action-buttons {
+    .exercise-actions {
       display: flex;
       gap: 1rem;
       justify-content: center;
@@ -141,12 +143,12 @@
     }
     
     .btn-secondary {
-      background: #e5e7eb;
-      color: #374151;
+      background: #6b7280;
+      color: white;
     }
     
     .btn-secondary:hover {
-      background: #d1d5db;
+      background: #4b5563;
     }
   </style>
 @endcomponent

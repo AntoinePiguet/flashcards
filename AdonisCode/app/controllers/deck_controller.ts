@@ -300,7 +300,7 @@ export default class DeckController {
     }
   }
 
-  async startExercise({ params, view, session, response }: HttpContext) {
+  async startExercise({ params, view, session }: HttpContext) {
     try {
       const deck = await Deck.findOrFail(params.id)
       await deck.load('cards')
@@ -321,75 +321,22 @@ export default class DeckController {
     }
   }
 
-  public async showExerciseCard({ params, view, session, response }: HttpContext) {
-    console.log('showExerciseCard: Received params:', params)
+  async showExerciseCard({ params, view, session }: HttpContext) {
+    try {
+      const deck = await Deck.findOrFail(params.id)
+      const card = await Card.findOrFail(params.cardId)
 
-    const deckId = params.id
-    const cardId = params.cardId
-    const requestedMode = params.mode
-    console.log('showExerciseCard: Requested mode from params:', requestedMode)
+      if (card.deckId !== deck.id) {
+        session.flash('error', "Cette carte n'appartient pas à ce deck")
+        return response.redirect().toRoute('deck.show', { id: deck.id })
+      }
 
-    console.log('showExerciseCard: Attempting to find deck with ID:', deckId)
-    const deck = await Deck.find(deckId)
-    console.log('showExerciseCard: Deck find result:', deck ? 'Found' : 'Not Found')
-
-    if (!deck) {
-      session.flash('error', 'Deck non trouvé.')
+      return view.render('pages/exercise/card', { deck, card })
+    } catch (error) {
+      console.error('Error showing exercise card:', error)
+      session.flash('error', "Une erreur est survenue lors de l'affichage de la carte")
       return response.redirect().back()
     }
-
-    console.log('showExerciseCard: Attempting to load cards for deck:', deckId)
-    await deck.load('cards')
-    console.log('showExerciseCard: Cards loaded. Number of cards:', deck.cards.length)
-
-    console.log('showExerciseCard: Attempting to find card with ID:', cardId, ' within deck cards.')
-    const card = deck.cards.find((c) => c.id === cardId)
-    console.log('showExerciseCard: Card find result:', card ? 'Found' : 'Not Found')
-
-    if (!card) {
-      session.flash('error', 'Carte non trouvée.')
-      return response.redirect().back()
-    }
-
-    // S'assurer que la carte appartient bien au deck
-    if (card.deckId !== deck.id) {
-      session.flash('error', "Cette carte n'appartient pas à ce deck.")
-      return response.redirect().back()
-    }
-
-    // Always use the requested mode from the URL as the current exercise mode for this card view
-    const exerciseMode = requestedMode
-    console.log('showExerciseCard: Setting current exercise mode to requested mode:', exerciseMode)
-
-    // Update the mode in session to reflect the current card's mode
-    session.put('exercise_mode', exerciseMode)
-    console.log('showExerciseCard: Exercise mode stored in session:', session.get('exercise_mode'))
-
-    // If it's the timed mode ('2') and this is the first card being loaded for this mode, set the start time in session
-    const firstCardId = deck.cards[0]?.id
-    // Check if exercise data exists to determine if an exercise is already ongoing
-    const exerciseData = session.get('exercise_data', {})
-
-    // Logic to start timer only if it's the first card of a *new* timed exercise session
-    if (exerciseMode === '2' && cardId === firstCardId && Object.keys(exerciseData).length === 0) {
-      console.log(
-        'showExerciseCard: Timed mode on first card with no existing exercise data. Setting start time.'
-      )
-      session.put('exercise_start_time', Date.now())
-    }
-
-    console.log('showExerciseCard: Final mode passed to view:', exerciseMode)
-    console.log(
-      'showExerciseCard: Start time in session before rendering view:',
-      session.get('exercise_start_time')
-    )
-
-    // Pass the determined exercise mode to the view as a string
-    return view.render('pages/exercise/card', {
-      deck,
-      card,
-      exerciseModeValue: String(exerciseMode),
-    })
   }
 
   async submitAnswer({ params, request, response, session }: HttpContext) {
@@ -425,42 +372,29 @@ export default class DeckController {
     }
   }
 
-  public async finishExercise({ params, view, session, response }: HttpContext) {
-    const deckId = params.id
-    const deck = await Deck.find(deckId)
+  async finishExercise({ params, view, session }: HttpContext) {
+    try {
+      const deck = await Deck.findOrFail(params.id)
+      const answers = session.get('exercise_answers', {})
 
-    if (!deck) {
-      session.flash('error', 'Deck non trouvé.')
-      return response.redirect().back()
+      // Calculer les statistiques
+      const totalCards = Object.keys(answers).length
+      const correctAnswers = Object.values(answers).filter(Boolean).length
+      const score = Math.round((correctAnswers / totalCards) * 100)
+
+      // Nettoyer la session
+      session.forget('exercise_answers')
+
+      return view.render('pages/exercise/finish', {
+        deck,
+        score,
+        totalCards,
+        correctAnswers,
+      })
+    } catch (error) {
+      console.error('Error finishing exercise:', error)
+      session.flash('error', "Une erreur est survenue lors de la fin de l'exercice")
+      return response.redirect().toRoute('deck.show', { id: params.id })
     }
-
-    const exerciseData = session.get('exercise_data', {})
-    const correctAnswers = Object.values(exerciseData).filter((isCorrect) => isCorrect).length
-    const totalCards = deck.cards.length
-    const score = totalCards > 0 ? Math.round((correctAnswers / totalCards) * 100) : 0
-
-    // Récupérer le mode et le temps écoulé si mode chronométré
-    const mode = session.get('exercise_mode')
-    let elapsedTime = null
-    if (mode === '2') {
-      const startTime = session.get('exercise_start_time')
-      if (startTime) {
-        elapsedTime = Date.now() - startTime // Temps écoulé en millisecondes
-      }
-    }
-
-    // Nettoyer la session
-    session.forget('exercise_data')
-    session.forget('exercise_mode')
-    session.forget('exercise_start_time')
-
-    return view.render('pages/exercise/finish', {
-      deck,
-      score,
-      correctAnswers,
-      totalCards,
-      elapsedTime,
-      mode,
-    })
   }
 }
