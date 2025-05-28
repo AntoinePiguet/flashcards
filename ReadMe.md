@@ -242,7 +242,7 @@ The complete dockerized setup includes:
 - A phpMyAdmin container for database management
 - the Adonis.js application container with live code reloading (flashcards)
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # Step-by-Step Guide: Deploying an Adonis.js Application to fly.io
 
@@ -576,3 +576,61 @@ the official documentation about dockerfiles : https://docs.docker.com/reference
 
 AI's are also useful if you encounter a problem or an error that you dont understand
 i strongly recommand using Claude.ai or ChatGPT if you want an AI to help you build your project
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Staging Environment – FlashCards
+
+## What is the staging environment?
+
+The staging environment is a controlled replica of the FlashCards production environment, used to test new features before they go live.
+
+It is intended for developers, testers, or product managers to:
+
+- Verify that everything works correctly
+- Identify potential bugs
+- Approve changes before release
+
+## What is its purpose in FlashCards?
+
+- Test new features such as learning mode or flashcard management
+- Validate database changes (migrations)
+- Preview the user interface before production release
+- Ensure backend ↔ frontend integration works smoothly
+- Perform security or performance testing
+
+## How to set up a staging environment
+
+Here is the link to the production environment setup:
+
+**👉 View the full procedure**
+
+## Test Table for Staging
+
+| Feature                      | Test Objective                               | Expected Result                           |
+| ---------------------------- | -------------------------------------------- | ----------------------------------------- |
+| User account creation        | Verify that registration works               | Redirect to the login page                |
+| User login                   | Test with valid/invalid credentials          | Access denied if password is incorrect    |
+| Deck creation                | Ensure a new deck can be created             | Deck appears on the homepage              |
+| Deck modification            | Change a deck's name or description          | Information is updated                    |
+| Deck deletion                | Delete an existing deck                      | Deck is removed                           |
+| Adding flashcards            | Create a card with a question and answer     | Card appears in the deck                  |
+| Learning mode                | Start a session and navigate through cards   | Proper display, progression is tracked    |
+| Learning statistics          | Review multiple cards and finish the session | Correct display of final stats            |
+| Error display                | Trigger an unauthorized or invalid action    | Clear error message                       |
+| Responsive behavior (mobile) | Test UI on various screen sizes              | Smooth display without overflow           |
+| Database migration           | Add a new column to a model                  | No errors, column is correctly added      |
+| MySQL database connection    | Test access with the defined credentials     | Connection succeeds without Access Denied |
+| Homepage loading             | Check load times                             | Less than 2 seconds                       |
+
+## Conclusion
+
+The staging environment plays a crucial role in the lifecycle of the FlashCards application. It allows testing of features in conditions close to production without impacting end users.
+
+Thanks to this intermediate environment, you can:
+
+- Identify bugs early
+- Validate changes with the team or stakeholders
+- Build confidence before every production deployment
+
+By following best practices (isolated variables, dedicated database, systematic testing), the staging environment becomes a true safety net before going live.
