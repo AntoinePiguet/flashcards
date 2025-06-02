@@ -8,6 +8,13 @@ if you have docker desktop installed on your computer (if not, install docker de
    it will create the containers, install the dependencies, do the migrations and start the server on localhost:${RandomPort}
 3. Copy the localhost adress and paste it in your browser and bim you're on the website
 
+
+
+**Diagram**
+![](./diagramme.png)
+
+
+
 # Step-by-Step Guide: Dockerizing flashcards
 
 Starting with just an Adonis application and a Docker setup for the database, we'll build a complete containerized development environment.
